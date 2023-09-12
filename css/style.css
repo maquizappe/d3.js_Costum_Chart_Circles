@@ -1,0 +1,33 @@
+svg {
+	margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+.containerScrolling{
+      display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top:50px;
+
+}
+
+.textScrolling{
+    margin-top:10px;
+}
+
+img{
+    width: 50px;
+}
+
+.containerTitle{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom:40px;
+    margin-top: 50px;
+}
+
+body{
+    font-family: 'Inter', sans-serif;
+   }

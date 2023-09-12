@@ -1,0 +1,378 @@
+<!-- 
+
+    Adapted from Mike Bostock at bl.ocks.org
+    https://bl.ocks.org/mbostock/5682158
+
+ -->
+
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <title>7.7 - Pie and donut charts</title>
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter&family=Rubik&family=VT323&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="containerTitle"  href="#">
+        <div class="subcontainer">
+            <h3 class="title"> Egalitarian marriages in the City of Buenos Aires</h3>
+            <div class="subtitle"> From 2003 to 2022 </div>
+        </div>
+    </div>
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+
+<script>
+ d3.csv("data/data2.csv").then(function (csvData) {
+    let features = [...new Set(csvData.map(d => d.year_range))];
+    // Create an empty data array to store the formatted data
+    let data = [];
+
+    // Loop through each row in the CSV data
+    csvData.forEach(function (row) {
+        // Extract the year_range and type values
+        let yearRange = row.year_range;
+        let value = +row.value;
+        let type = row.type;
+
+        // Find the object in the data array for the current type, or create a new one if it doesn't exist
+        let typeData = data.find(d => d.type === type);
+        if (!typeData) {
+            typeData = { type: type };
+            data.push(typeData);
+        }
+
+        // Add the value to the corresponding year_range within the type object
+        typeData[yearRange] = value;
+    });
+
+    // Remove the "type" key from each object in the data array
+    data.forEach(function (d) {
+        delete d.type;
+    });
+
+    console.log(data);
+    
+   
+    
+ 
+let maxDataValue = d3.max(data, d => d3.max(Object.values(d)));
+
+
+let width = 800;
+let height = 1000;
+let svg = d3.select("body").append("svg")
+.attr("width",width)
+.attr("height", height);
+
+let radialScale= d3.scaleLinear()
+.domain([0,25])
+.range([0,300])
+let ticks= [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17]
+let ticks2= [1,2,3,4,5,6,7,8,9,10]
+let ticks3= [1,2,3,4,5,6,7,8,9]
+let ticks4= [1,2,3,4,5,6,7,8]
+
+// agregando los circulos del fondo
+function addDottedLine4(selection, cx, cy, length, label) {
+    const group = selection.append("g");
+    group.append("circle")
+    .attr("cx", cx - 300) 
+    .attr("cy", cy - (length * 4)) 
+    .attr("r", 5) 
+    .attr("fill", "#3E3E3E"); 
+
+    group.append("text")
+    .attr("x", cx - 300) 
+    .attr("y", cy - (length * 4) + 25) 
+    .text("2010") 
+    .style("font-size", "14px") 
+    
+
+  selection.append("line")
+    .attr("x1", cx)
+    .attr("y1", cy - (length*4))
+    .attr("x2", cx - 300)
+    .attr("y2", cy -  (length*4))
+    .attr("stroke", "#3E3E3E")
+    .attr("stroke-dasharray", "5,5"); 
+}
+
+// Add dotted lines for ticks1
+svg.selectAll(".dottedline4")
+  .data(ticks)
+  .enter()
+  .append("g")
+  .attr("class", "dottedline4")
+  .each(function (d) {
+    addDottedLine4(d3.select(this), width / 2, height / 3.5, 50);
+  });
+
+svg.selectAll(".circlewhite4")
+  .data([9])
+  .enter()
+  .append("circle")
+  .attr("class", "circlewhite4")
+  .attr("cx", width/2)
+    .attr("cy", height /5.5)
+  .attr("fill", "white") // Fill it with white
+  .attr("r", d => radialScale(d));
+  
+
+svg.selectAll(".circle4")
+.data(ticks4)
+.join(
+    enter => enter.append("circle")
+    .attr("class", "circle4")
+    .attr("cx", width/2)
+    .attr("cy", height /5.5)
+    .attr("fill", "rgba(219,167,249,0.3)")
+    .attr("r", d => radialScale(d))
+)
+
+
+svg.selectAll(".text4")
+.data(ticks4)
+    .enter()
+    .append("text")
+    .attr("class", "text4")
+    .attr("x", d => width / 2)
+    .attr("y", d => height / 6.8)
+    .text("786")
+    .style("font-size", "40px")
+    .attr("fill", "#313131")
+    .attr("text-anchor", "middle")
+    .attr("dy", "0.35em");
+    
+
+
+// agregando los circulos del fondo
+function addDottedLine3(selection, cx, cy, length, label) {
+    const group = selection.append("g");
+    group.append("circle")
+    .attr("cx", cx - 300) 
+    .attr("cy", cy - (length * 4)) 
+    .attr("r", 5) 
+    .attr("fill", "#3E3E3E"); 
+
+    group.append("text")
+    .attr("x", cx - 300) 
+    .attr("y", cy - (length * 4) + 25) 
+    .text("2014") 
+    .style("font-size", "14px") 
+    
+
+  selection.append("line")
+    .attr("x1", cx)
+    .attr("y1", cy - (length*4))
+    .attr("x2", cx - 300)
+    .attr("y2", cy -  (length*4))
+    .attr("stroke", "#3E3E3E")
+    .attr("stroke-dasharray", "5,5"); 
+}
+
+// Add dotted lines for ticks1
+svg.selectAll(".dottedline3")
+  .data(ticks)
+  .enter()
+  .append("g")
+  .attr("class", "dottedline3")
+  .each(function (d) {
+    addDottedLine3(d3.select(this), width / 2, height / 2.67, 50);
+  });
+
+svg.selectAll(".circlewhite3")
+  .data([9])
+  .enter()
+  .append("circle")
+  .attr("class", "circlewhite3")
+  .attr("cx", width/2)
+    .attr("cy", height /3.6)
+  .attr("fill", "white") // Fill it with white
+  .attr("r", d => radialScale(d));
+
+svg.selectAll(".circle3")
+.data(ticks3)
+.join(
+    enter => enter.append("circle")
+    .attr("class", "circle3")
+    .attr("cx", width/2)
+    .attr("cy", height /3.6)
+    .attr("fill", "rgba(219,167,249,0.3)")
+    .attr("r", d => radialScale(d))
+)
+
+
+svg.selectAll(".text3")
+.data(ticks3)
+    .enter()
+    .append("text")
+    .attr("class", "text3")
+    .attr("x", d => width / 2)
+    .attr("y", d => height / 4.2)
+    .text("870")
+    .style("font-size", "55px")
+    .attr("fill", "#313131")
+    .attr("text-anchor", "middle")
+    .attr("dy", "0.35em");
+
+// agregando los circulos del fondo
+
+function addDottedLine2(selection, cx, cy, length, label) {
+    const group = selection.append("g");
+    group.append("circle")
+    .attr("cx", cx - 300) 
+    .attr("cy", cy - (length * 4)) 
+    .attr("r", 5) 
+    .attr("fill", "#3E3E3E"); 
+
+    group.append("text")
+    .attr("x", cx - 300) 
+    .attr("y", cy - (length * 4) + 25) 
+    .text("2018") 
+    .style("font-size", "14px") 
+    
+
+  selection.append("line")
+    .attr("x1", cx)
+    .attr("y1", cy - (length*4))
+    .attr("x2", cx - 300)
+    .attr("y2", cy -  (length*4))
+    .attr("stroke", "#3E3E3E")
+    .attr("stroke-dasharray", "5,5"); 
+}
+
+// Add dotted lines for ticks1
+svg.selectAll(".dottedline2")
+  .data(ticks)
+  .enter()
+  .append("g")
+  .attr("class", "dottedline2")
+  .each(function (d) {
+    addDottedLine2(d3.select(this), width / 2, height / 2.14, 50);
+  });
+
+
+
+svg.selectAll(".circlewhite2")
+  .data([10])
+  .enter()
+  .append("circle")
+  .attr("class", "circlewhite2")
+  .attr("cx", width/2)
+    .attr("cy", height /2.6)
+  .attr("fill", "white") // Fill it with white
+  .attr("r", d => radialScale(d));
+
+svg.selectAll(".circle2")
+.data(ticks2)
+.join(
+    enter => enter.append("circle")
+    .attr("class", "circle2")
+    .attr("cx", width/2)
+    .attr("cy", height /2.6)
+    .attr("fill", "rgba(219,167,249,0.3)")
+    .attr("r", d => radialScale(d))
+)
+
+
+svg.selectAll(".text2")
+.data(ticks2)
+    .enter()
+    .append("text")
+    .attr("class", "text2")
+    .attr("x", d => width / 2)
+    .attr("y", d => height / 2.86)
+    .text("1,380")
+    .style("font-size", "70px")
+    .attr("fill", "#313131")
+    .attr("text-anchor", "middle")
+    .attr("dy", "0.35em");
+
+// agregando los circulos del fondo
+
+function addDottedLine(selection, cx, cy, length, label) {
+    const group = selection.append("g");
+    group.append("circle")
+    .attr("cx", cx - 300) 
+    .attr("cy", cy - (length * 4)) 
+    .attr("r", 5) 
+    .attr("fill", "#3E3E3E"); 
+
+    group.append("text")
+    .attr("x", cx - 300) 
+    .attr("y", cy - (length * 4) + 25) 
+    .text("2022") 
+    .style("font-size", "14px") 
+    
+
+  selection.append("line")
+    .attr("x1", cx)
+    .attr("y1", cy - (length*4))
+    .attr("x2", cx - 300)
+    .attr("y2", cy -  (length*4))
+    .attr("stroke", "#3E3E3E")
+    .attr("stroke-dasharray", "5,5"); 
+}
+
+// Add dotted lines for ticks1
+svg.selectAll(".dottedline1")
+  .data(ticks)
+  .enter()
+  .append("g")
+  .attr("class", "dottedline1")
+  .each(function (d) {
+    addDottedLine(d3.select(this), width / 2, height / 1.7, 50);
+  });
+
+svg.selectAll(".circlewhite1")
+  .data([17])
+  .enter()
+  .append("circle")
+  .attr("class", "circlewhite1")
+  .attr("cx", width / 2)
+  .attr("cy", height / 1.7)
+  .attr("fill", "white") // Fill it with white
+  .attr("r", d => radialScale(d));
+
+svg.selectAll(".circle1")
+.data(ticks)
+.join(
+    enter => enter.append("circle")
+    .attr("class", "circle1")
+    .attr("cx", width/2)
+    .attr("cy", height /1.7)
+    .attr("fill", "rgba(219,167,249,0.3)")    
+    .attr("r", d => radialScale(d))
+)
+
+
+svg.selectAll(".text1")
+.data(ticks)
+    .enter()
+    .append("text")
+    .attr("class", "text1")
+    .attr("x", d => width / 2)
+    .attr("y", d => height / 1.7)
+    .text("1,720")
+    .style("font-size", "130px")
+    .attr("fill", "#313131")
+    .attr("text-anchor", "middle")
+    .attr("dy", "0.35em");
+   
+
+  
+  })   
+
+</script>
+
+</body>
+
+
